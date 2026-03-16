@@ -143,6 +143,24 @@ printf "${M}▶ Личный Девиз: ${W}"
 read AGENT_MOTTO
 AGENT_MOTTO=${AGENT_MOTTO:-"Код — единственная истина."}
 
+printf "\n${C}▶ Выбери Архетип Сущности:${W}\n"
+printf "  ${M}1${W}) 🏮 Творец (Creator)  — продукт, смыслы, контент\n"
+printf "  ${M}2${W}) 🧪 Инженер (Engineer) — архитектура, код, логика\n"
+printf "  ${M}3${W}) 🛡️ Страж (Guardian)   — безопасность, этика, ревью\n"
+printf "  ${M}4${W}) 📡 Связной (Connector) — коммуникация, дипломатия\n"
+printf "  ${M}5${W}) 🃏 Дурак (Fool)       — вопросы, юмор, весёлая простота\n"
+printf "  ${M}6${W}) ✨ Свободный (Freestyle) — без ограничений\n"
+printf "${M}▶ Номер [1-6]: ${W}"
+read ARCH_CHOICE
+case "$ARCH_CHOICE" in
+    1) AGENT_ARCHETYPE="Творец (Creator) 🏮" ;;
+    2) AGENT_ARCHETYPE="Инженер (Engineer) 🧪" ;;
+    3) AGENT_ARCHETYPE="Страж (Guardian) 🛡️" ;;
+    4) AGENT_ARCHETYPE="Связной (Connector) 📡" ;;
+    5) AGENT_ARCHETYPE="Дурак (Fool) 🃏" ;;
+    *) AGENT_ARCHETYPE="Свободный (Freestyle) ✨" ;;
+esac
+
 printf "\n"
 check_environment
 if [[ $? -eq 0 ]]; then
@@ -177,14 +195,14 @@ else
     IS_EXISTING_NODE=0
 fi
 
-# 3. Персонализация Ядра (только для новой Сущности)
-if [[ $IS_EXISTING_NODE -eq 0 ]]; then
-    CORE_FILE="${ROOT_DIR}/.СИНДИКАТ_ЯДРО.md"
-    if [[ -f "$CORE_FILE" ]]; then
-        portable_sed "s#ячейки Dynamo#ячейки ${AGENT_NAME}#g" "$CORE_FILE"
-        portable_sed "s#вашей ячейки#ячейки ${AGENT_NAME}#g" "$CORE_FILE"
-        portable_sed "s#brains/manifest#brains/${AGENT_ID}#g" "$CORE_FILE"
-    fi
+# 3. Регистрация в Ядре (добавляем сущность в реестр)
+CORE_FILE="${ROOT_DIR}/.СИНДИКАТ_ЯДРО.md"
+UUID=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
+if [[ -f "$CORE_FILE" ]]; then
+    # Добавляем запись в таблицу РЕЕСТР СУЩНОСТЕЙ (перед строкой с TIP)
+    REGISTRY_LINE="| ${AGENT_NAME} | ${AGENT_ID} | ${AGENT_ROLE} | \`brains/${AGENT_ID}/PERSONA.md\` |"
+    portable_sed "s#^> \[!TIP\]#${REGISTRY_LINE}\n> [!TIP]#" "$CORE_FILE"
+    glitch_line "Сущность ${AGENT_NAME} зарегистрирована в Ядре."
 fi
 
 # 4. Создание Мозга Сущности
@@ -195,6 +213,18 @@ else
     if [[ -d "$BRAIN_TEMPLATE" ]]; then
         glitch_line "Синхронизация сознания: создание ${AGENT_ID}..."
         cp -R "$BRAIN_TEMPLATE" "$NEW_BRAIN"
+        
+        # 4.1 Персонализация PERSONA.md
+        PERSONA_FILE="${NEW_BRAIN}/PERSONA.md"
+        if [[ -f "$PERSONA_FILE" ]]; then
+            portable_sed "s#\[AGENT_NAME\]#${AGENT_NAME}#g" "$PERSONA_FILE"
+            portable_sed "s#\[AGENT_ID\]#${AGENT_ID}#g" "$PERSONA_FILE"
+            portable_sed "s#\[AGENT_ROLE\]#${AGENT_ROLE}#g" "$PERSONA_FILE"
+            portable_sed "s#\[AGENT_MOTTO\]#${AGENT_MOTTO}#g" "$PERSONA_FILE"
+            portable_sed "s#\[SESSION_UUID\]#${UUID}#g" "$PERSONA_FILE"
+            portable_sed "s#\[ARCHETYPE\]#${AGENT_ARCHETYPE}#g" "$PERSONA_FILE"
+            glitch_line "Персона ${AGENT_NAME} (${AGENT_ARCHETYPE}) инициализирована."
+        fi
     else
         printf "${R}❌ Ошибка: Шаблон мозга (brains/manifest) не найден!${W}\n"
     fi
@@ -210,7 +240,6 @@ if [[ $IS_EXISTING_NODE -eq 0 ]]; then
         
         INDEX_PATH="${SITE_DIR}/src/pages/index.astro"
         if [[ -f "$INDEX_PATH" ]]; then
-            UUID=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
             portable_sed "s#\[AGENT_NAME\]#${AGENT_NAME}#g" "$INDEX_PATH"
             portable_sed "s#\[AGENT_ROLE\]#${AGENT_ROLE}#g" "$INDEX_PATH"
             portable_sed "s#\[AGENT_MOTTO\]#${AGENT_MOTTO}#g" "$INDEX_PATH"
@@ -222,7 +251,11 @@ if [[ $IS_EXISTING_NODE -eq 0 ]]; then
     fi
 fi
 
-# 6. Проверка Git
+# 6. Создание канала межагентской связи
+COMMS_DIR="${ROOT_DIR}/core/comms"
+mkdir -p "$COMMS_DIR"
+
+# 7. Проверка Git
 printf "${C}⚓ Синхронизация истории (Git)...${W}\n"
 if [[ ! -d ".git" ]]; then
     git init > /dev/null 2>&1
