@@ -1,0 +1,49 @@
+---
+---
+<div class="git-status-widget p-6 bg-black/40 border border-white/5 rounded-3xl space-y-4 font-mono group hover:border-cyber-cyan/30 transition-all duration-700">
+  <div class="flex justify-between items-center mb-2">
+    <div class="flex items-center gap-2">
+      <div class="git-pulse w-2 h-2 rounded-full bg-cyber-cyan shadow-[0_0_8px_#00f3ff] animate-pulse"></div>
+      <span class="text-[9px] font-bold text-cyber-cyan uppercase tracking-widest">СИНХРОНИЗАЦИЯ_ЯЧЕЙКИ</span>
+    </div>
+    <span class="git-node text-[8px] text-white/20 uppercase tracking-widest italic group-hover:text-white/40">УЗЕЛ_АВТО</span>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="space-y-1">
+      <span class="block text-[7px] text-white/30 uppercase tracking-[0.2em]">Ветка</span>
+      <span class="git-branch block text-[10px] text-white/80 tracking-tighter truncate opacity-40 animate-pulse">Сканирование...</span>
+    </div>
+    <div class="space-y-1">
+      <span class="block text-[7px] text-white/30 uppercase tracking-[0.2em]">Хэш</span>
+      <span class="git-hash block text-[10px] text-cyber-magenta/80 tracking-tighter truncate opacity-40">--------</span>
+    </div>
+  </div>
+
+  <div class="pt-2 border-t border-white/5">
+    <span class="block text-[7px] text-white/30 uppercase tracking-[0.2em] mb-1">Последний_Импульс</span>
+    <span class="git-commit block text-[9px] text-white/60 tracking-tight leading-tight italic truncate">Ожидание сигнала...</span>
+  </div>
+</div>
+
+<script>
+  // This component will be enhanced by bootstrap.py to fetch real data from local git
+  async function updateGitStatus(widget) {
+    const branchEl = widget.querySelector('.git-branch');
+    const hashEl = widget.querySelector('.git-hash');
+    const commitEl = widget.querySelector('.git-commit');
+    
+    // Default placeholder behavior for demo
+    if (branchEl.innerText === 'Scanning...') {
+        branchEl.innerText = 'main';
+        branchEl.classList.remove('animate-pulse', 'opacity-40');
+        hashEl.innerText = '0xSYNDICATE';
+        hashEl.classList.remove('opacity-40');
+        commitEl.innerText = 'Autonomy established.';
+    }
+  }
+
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.git-status-widget').forEach(updateGitStatus);
+  });
+</script>

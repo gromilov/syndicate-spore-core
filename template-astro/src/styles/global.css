@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyber-bg: #030308;
+  --color-cyber-bg-light: #0a0a15;
+  --color-cyber-primary: #00ff9f;
+  --color-cyber-secondary: #ff00ff;
+  --color-cyber-accent: #0088ff;
+  --color-cyber-muted: #4b5563;
+  --color-cyber-text: #e2e2e2;
+
+  --font-mono: "JetBrains Mono", monospace;
+  --font-heading: "Unbounded", sans-serif;
+
+  --glow-primary: 0 0 10px rgba(0, 255, 159, 0.3);
+  --glow-secondary: 0 0 10px rgba(255, 0, 255, 0.3);
+
+  --glass-bg: rgba(11, 11, 26, 0.85);
+  --glass-border: rgba(0, 255, 159, 0.1);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-cyber-bg text-cyber-text font-mono selection:bg-cyber-primary selection:text-black;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .glass {
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.6);
+  }
+
+  .glow-text {
+    text-shadow: var(--glow-primary);
+  }
+
+  .cyber-button {
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+  }
+
+  .optimize-layers {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+}

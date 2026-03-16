@@ -1,0 +1,44 @@
+---
+interface Props {
+  class?: string;
+  variant?: 'default' | 'pink' | 'blue';
+  title?: string;
+}
+
+const { class: className, variant = 'default', title } = Astro.props;
+
+const variants = {
+  default: "border-[#00ff9f]/20 hover:border-[#00ff9f]/50",
+  pink: "border-[#ff00ff]/20 hover:border-[#ff00ff]/50",
+  blue: "border-[#0088ff]/20 hover:border-[#0088ff]/50"
+};
+---
+
+<div class:list={[
+  "glass p-6 md:p-8 rounded-3xl relative transition-all duration-500 overflow-hidden group/card",
+  variants[variant],
+  className
+]}>
+  <div class="absolute top-0 right-0 p-4 opacity-10 group-hover/card:opacity-20 transition-opacity">
+    <slot name="icon" />
+  </div>
+
+  {title && (
+    <h3 class="text-[10px] uppercase text-white/40 mb-4 tracking-[0.3em] font-black">{title}</h3>
+  )}
+  <div class="relative z-10">
+    <slot />
+  </div>
+  
+  <!-- Accent corners -->
+  <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary/20 rounded-tl-3xl"></div>
+  <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary/20 rounded-br-3xl"></div>
+</div>
+
+<style>
+  .glass {
+    background: rgba(11, 11, 26, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+</style>

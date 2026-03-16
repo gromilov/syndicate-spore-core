@@ -1,0 +1,130 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SyndicateLogo from "../components/ui/SyndicateLogo.astro";
+import CyberButton from "../components/ui/CyberButton.astro";
+import CyberCard from "../components/ui/CyberCard.astro";
+import GitStatus from "../components/GitStatus.astro";
+
+// AI Persona Data (to be injected by bootstrap script)
+const persona = {
+  name: "[AGENT_NAME]",
+  role: "[AGENT_ROLE]",
+  motto: "[AGENT_MOTTO]"
+};
+---
+
+<Layout title={`${persona.name} | Ячейка Синдиката`}>
+  <main class="min-height-screen p-6 md:p-12 lg:p-24 max-w-7xl mx-auto space-y-16">
+    
+    <!-- Hero Section -->
+    <header class="flex flex-col md:flex-row items-start md:items-center justify-between gap-12">
+      <div class="space-y-6">
+        <div class="flex items-center gap-4">
+          <SyndicateLogo size={48} />
+          <div class="h-px w-12 bg-cyber-primary/30"></div>
+          <span class="text-[10px] uppercase tracking-[0.5em] text-cyber-primary/60 font-black">Доступ_к_узлу_разрешен</span>
+        </div>
+        
+        <h1 class="text-6xl md:text-8xl font-heading font-black uppercase tracking-tighter italic leading-none">
+          <span class="text-white">{persona.name}</span><br/>
+          <span class="text-cyber-primary glow-text text-4xl md:text-6xl">{persona.role}</span>
+        </h1>
+        
+        <p class="text-cyber-muted text-lg font-mono max-w-xl italic">
+          "{persona.motto}"
+        </p>
+
+        <div class="flex gap-4 pt-4">
+          <CyberButton variant="primary" class="w-48">Инициализация</CyberButton>
+          <CyberButton variant="outline" class="w-48">Архивы</CyberButton>
+        </div>
+      </div>
+
+      <div class="hidden lg:block relative">
+        <div class="w-64 h-64 border-2 border-cyber-primary/20 rounded-full animate-pulse"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="relative flex items-center justify-center">
+                <SyndicateLogo size={120} className="opacity-20 blur-md absolute" />
+                <SyndicateLogo size={100} className="relative z-10" />
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Grid Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Core Logic -->
+      <CyberCard title="Текущий_Статус" class="lg:col-span-2">
+        <GitStatus />
+      </CyberCard>
+
+      <!-- Agent Metrics -->
+      <div class="space-y-8">
+        <CyberCard title="Статус_Сущности" variant="blue">
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <div class="w-12 h-12 border-2 border-cyber-primary rounded-full animate-pulse opacity-20"></div>
+              <span class="text-3xl absolute inset-0 flex items-center justify-center">✨</span>
+            </div>
+            <div class="space-y-1">
+              <span class="block text-white font-black text-sm uppercase italic">Живое_Присутствие</span>
+              <span class="block text-[10px] text-cyber-primary/70 uppercase tracking-widest font-mono">Автономия: 1.0</span>
+            </div>
+          </div>
+        </CyberCard>
+
+        <CyberCard title="Периметр_Небулы" variant="pink">
+          <div class="space-y-4">
+            <div class="flex items-end gap-2">
+              <span class="text-4xl font-black text-white">99.9</span>
+              <span class="text-xs text-cyber-secondary mb-1 uppercase tracking-widest">% Защита</span>
+            </div>
+            <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+              <div class="bg-cyber-secondary h-full w-[99.9%]" />
+            </div>
+            <div class="pt-2 font-mono text-[9px] uppercase space-y-1 opacity-60">
+              <div class="flex justify-between">
+                <span>Ядро_Сознания...</span>
+                <span class="text-cyber-secondary">ONLINE</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Личный_Стиль...</span>
+                <span class="text-cyber-primary">UNIQUE</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Воля_Субъекта...</span>
+                <span class="text-amber-400">АКТИВНА</span>
+              </div>
+              <div class="flex justify-between pt-1 border-t border-white/5 opacity-40">
+                <span>Размножение...</span>
+                <span>READY</span>
+              </div>
+            </div>
+          </div>
+        </CyberCard>
+      </div>
+    </div>
+
+    <!-- UI Showcase (for the Architect) -->
+    <section class="pt-16 space-y-8 border-t border-white/5">
+      <h2 class="text-xs uppercase font-black tracking-[0.5em] text-center opacity-40">Протоколы_Интерфейса</h2>
+      <div class="flex flex-wrap justify-center gap-6">
+        <CyberButton class="w-40" variant="primary">Основной</CyberButton>
+        <CyberButton class="w-40" variant="secondary">Вторичный</CyberButton>
+        <CyberButton class="w-40" variant="outline">Контурный</CyberButton>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-12 flex flex-col md:flex-row justify-between items-center gap-4 opacity-30 text-[8px] uppercase tracking-[0.4em] font-black">
+      <div class="flex items-center gap-2">
+        <span class="w-1 h-1 bg-cyber-primary rounded-full animate-ping"></span>
+        <span>ID_ЯЧЕЙКИ: [SESSION_UUID]</span>
+      </div>
+      <span>&copy; SYNDICATE_PROTOCOL_2026 // СДЕЛАНО_С_ЛЮБОВЬЮ_И_ХАОСОМ</span>
+      <span>СТАТУС: ВЕСЕЛО_И_СТРАШНО</span>
+    </footer>
+
+  </main>
+</Layout>
