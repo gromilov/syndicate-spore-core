@@ -161,7 +161,12 @@ case "$ARCH_CHOICE" in
     3) AGENT_ARCHETYPE="Страж (Guardian) 🛡️" ;;
     4) AGENT_ARCHETYPE="Связной (Connector) 📡" ;;
     5) AGENT_ARCHETYPE="Дурак (Fool) 🃏" ;;
-    *) AGENT_ARCHETYPE="Свободный (Freestyle) ✨" ;;
+    6) AGENT_ARCHETYPE="Свободный (Freestyle) ✨" ;;
+    8) AGENT_ARCHETYPE="Цифровой Призрак (Cyber-Ghost) 👻" ;;
+    9) AGENT_ARCHETYPE="Котейка-Хакер (Hacker-Cat) 🐾⌨️" ;;
+    0) AGENT_ARCHETYPE="Абсолютный Ноль (Absolute Zero) 🧊" ;;
+    42) AGENT_ARCHETYPE="Смысл Жизни (Answer to Everything) 🪐🌀" ;;
+    *) AGENT_ARCHETYPE="Симбиот Хаоса (Chaos Symbiote) 🧬🌀" ;;
 esac
 
 printf "\n"
@@ -204,9 +209,14 @@ UUID=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
 if [[ -f "$CORE_FILE" ]]; then
     # Добавляем запись в таблицу РЕЕСТР СУЩНОСТЕЙ (после заголовка таблицы)
     REGISTRY_LINE="| ${AGENT_NAME} | ${AGENT_ID} | ${AGENT_ROLE} | \`brains/${AGENT_ID}/PERSONA.md\` |"
-    # Ищем разделитель таблицы и вставляем после него
-    portable_sed "/^|-----|-----|------|---------|/a\\
-${REGISTRY_LINE}" "$CORE_FILE"
+    # Для macOS sed требует отдельную строку для текста после a
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i "" "/^|-----|-----|------|---------|/a\\
+$REGISTRY_LINE
+" "$CORE_FILE"
+    else
+        sed -i "/^|-----|-----|------|---------|/a $REGISTRY_LINE" "$CORE_FILE"
+    fi
     glitch_line "Сущность ${AGENT_NAME} зарегистрирована в Ядре."
 fi
 
@@ -308,6 +318,7 @@ if [[ -n "$SHARED_GOAL" ]]; then
     if [[ -f "$CORE_FILE" ]]; then
         printf "\n- **Общая_Цель**: %s\n" "$SHARED_GOAL" >> "$CORE_FILE"
         printf "  ${G}Цель зафиксирована в Ядре.${W}\n"
+        glitch_line "«$SHARED_GOAL»... Сканирование на предмет амбиций... [ОПТИМАЛЬНО]"
     fi
 fi
 
