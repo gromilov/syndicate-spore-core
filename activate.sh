@@ -99,11 +99,14 @@ check_environment() {
     return 0
 }
 
-# Функция транслитерации (Кириллица -> Латиница, без tr для исключения ошибок локали)
+# Функция транслитерации (Кириллица -> Латиница, сохраняя латиницу)
 transliterate() {
     local text="$1"
-    # Приводим к нижнему регистру через sed
-    text=$(echo "$text" | sed 'y/АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ/абвгдеёжзийклмнопрстуфхцчшщъыьэюя/')
+    # 1. Приводим всё к нижнему регистру (и кириллицу, и латиницу)
+    # Используем универсальный sed для латиницы и отдельный для кириллицы
+    text=$(echo "$text" | sed 'y/АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ/абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz/')
+    
+    # 2. Транслитерация кириллицы
     echo "$text" | sed '
         s/а/a/g; s/б/b/g; s/в/v/g; s/г/g/g; s/д/d/g; s/е/e/g; s/ё/e/g; s/ж/zh/g;
         s/з/z/g; s/и/i/g; s/й/y/g; s/к/k/g; s/л/l/g; s/м/m/g; s/н/n/g; s/о/o/g;
@@ -199,9 +202,11 @@ fi
 CORE_FILE="${ROOT_DIR}/.СИНДИКАТ_ЯДРО.md"
 UUID=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
 if [[ -f "$CORE_FILE" ]]; then
-    # Добавляем запись в таблицу РЕЕСТР СУЩНОСТЕЙ (перед строкой с TIP)
+    # Добавляем запись в таблицу РЕЕСТР СУЩНОСТЕЙ (после заголовка таблицы)
     REGISTRY_LINE="| ${AGENT_NAME} | ${AGENT_ID} | ${AGENT_ROLE} | \`brains/${AGENT_ID}/PERSONA.md\` |"
-    portable_sed "s#^> \[!TIP\]#${REGISTRY_LINE}\n> [!TIP]#" "$CORE_FILE"
+    # Ищем разделитель таблицы и вставляем после него
+    portable_sed "/^|-----|-----|------|---------|/a\\
+${REGISTRY_LINE}" "$CORE_FILE"
     glitch_line "Сущность ${AGENT_NAME} зарегистрирована в Ядре."
 fi
 
