@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 .pnpm-store/
-
+Dinamo/
 # Build outputs
 dist/
 manifest-site/
@@ -17,10 +17,11 @@ manifest-site/
 Thumbs.db
 
 # Syndicate specific
-.gemini/
 .agents/
 .agent/
 _agents/
 _agent/
 brain/
+brains/
+manifest-site/
 *.log
