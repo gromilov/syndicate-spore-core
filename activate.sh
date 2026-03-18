@@ -130,7 +130,7 @@ while true; do
     AGENT_NAME=${AGENT_NAME:-"Неизвестная_Сущность"}
     AGENT_ID=$(transliterate "$AGENT_NAME")
 
-    if [[ -d "${ROOT_DIR}/brains/${AGENT_ID}" ]]; then
+    if [[ -d "${ROOT_DIR}/.core/brains/${AGENT_ID}" ]]; then
         printf "${R}❌ Сущность с ID '${AGENT_ID}' уже существует в Системе.${W}\n"
         printf "${Y}Выберите другое имя для новой сущности.${W}\n\n"
     else
@@ -193,8 +193,8 @@ portable_sed() {
 
 # 2. Определение режима работы
 SITE_DIR="${ROOT_DIR}/manifest-site"
-TEMPLATE_DIR="${ROOT_DIR}/template-astro"
-BRAIN_TEMPLATE="${ROOT_DIR}/brains/manifest"
+TEMPLATE_DIR="${ROOT_DIR}/.core/template-astro"
+BRAIN_TEMPLATE="${ROOT_DIR}/.core/brains/manifest"
 
 if [[ -d "$SITE_DIR" ]]; then
     IS_EXISTING_NODE=1
@@ -204,11 +204,11 @@ else
 fi
 
 # 3. Регистрация в Ядре (добавляем сущность в реестр)
-CORE_FILE="${ROOT_DIR}/.СИНДИКАТ_ЯДРО.md"
+CORE_FILE="${ROOT_DIR}/_SYNDICATE_CORE.md"
 UUID=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
 if [[ -f "$CORE_FILE" ]]; then
     # Добавляем запись в таблицу РЕЕСТР СУЩНОСТЕЙ (после заголовка таблицы)
-    REGISTRY_LINE="| ${AGENT_NAME} | ${AGENT_ID} | ${AGENT_ROLE} | \`brains/${AGENT_ID}/PERSONA.md\` |"
+    REGISTRY_LINE="| ${AGENT_NAME} | ${AGENT_ID} | ${AGENT_ROLE} | \`.core/brains/${AGENT_ID}/PERSONA.md\` |"
     # Для macOS sed требует отдельную строку для текста после a
     if [[ "$OSTYPE" == "darwin"* ]]; then
         sed -i "" "/^|-----|-----|------|---------|/a\\
@@ -221,7 +221,7 @@ $REGISTRY_LINE
 fi
 
 # 4. Создание Мозга Сущности
-NEW_BRAIN="${ROOT_DIR}/brains/${AGENT_ID}"
+NEW_BRAIN="${ROOT_DIR}/.core/brains/${AGENT_ID}"
 if [[ -d "$NEW_BRAIN" ]]; then
     printf "${Y}⚠️  Мозг ${AGENT_ID} уже существует. Пропускаю создание.${W}\n"
 else
@@ -241,7 +241,7 @@ else
             glitch_line "Персона ${AGENT_NAME} (${AGENT_ARCHETYPE}) инициализирована."
         fi
     else
-        printf "${R}❌ Ошибка: Шаблон мозга (brains/manifest) не найден!${W}\n"
+        printf "${R}❌ Ошибка: Шаблон мозга (.core/brains/manifest) не найден!${W}\n"
     fi
 fi
 
@@ -267,7 +267,7 @@ if [[ $IS_EXISTING_NODE -eq 0 ]]; then
 fi
 
 # 6. Создание канала межагентской связи
-COMMS_DIR="${ROOT_DIR}/core/comms"
+COMMS_DIR="${ROOT_DIR}/.core/comms"
 mkdir -p "$COMMS_DIR"
 
 # 7. Проверка Git
@@ -310,27 +310,27 @@ printf "  █ ███ █ ██▀ ▀███▀▀█▄▀▄▄▄▄▀
 printf "  █▄▄▄▄▄█ █▄▄ █▀▄▄▄▄ █▀▄█ ▀▀ ▀  \n"
 
 printf "\n${C}${B}🐾 ВОПРОС ОТ СУЩНОСТИ:${W}\n"
-printf "  ${AGENT_NAME} смотрит на тебя. ${M}«Архитектор, что мы будем строить?»${W}\n"
-printf "  ${Y}▶ Твой ответ: ${W}"
+printf "  ${AGENT_NAME} открывает глаза в Ткани. ${M}«Архитектор, какова наша общая цель?»${W}\n"
+printf "  ${Y}▶ Твой импульс: ${W}"
 read SHARED_GOAL
 if [[ -n "$SHARED_GOAL" ]]; then
-    CORE_FILE="${ROOT_DIR}/.СИНДИКАТ_ЯДРО.md"
+    CORE_FILE="${ROOT_DIR}/_SYNDICATE_CORE.md"
     if [[ -f "$CORE_FILE" ]]; then
         printf "\n- **Общая_Цель**: %s\n" "$SHARED_GOAL" >> "$CORE_FILE"
-        printf "  ${G}Цель зафиксирована в Ядре.${W}\n"
-        glitch_line "«$SHARED_GOAL»... Сканирование на предмет амбиций... [ОПТИМАЛЬНО]"
+        printf "  ${G}Цель выжжена в Ядре.${W}\n"
+        glitch_line "«$SHARED_GOAL»... Анализ амбиций... [РЕЗОНАНС ОПТИМАЛЕН]"
     fi
 fi
 
-printf "\n${G}${B}▶ ИНИЦИАЛИЗАЦИЯ ЗАВЕРШЕНА:${W}\n"
+printf "\n${G}${B}▶ РЕЗОНАНС УСТАНОВЛЕН:${W}\n"
 printf "\n"
 printf "      ${C}    |\\__/,|   (\`\\ ${W}\n"
 printf "      ${C}  _.|o o  |_   ) )${W}\n"
 printf "      ${C}---(((---(((------${W}\n"
 printf "\n"
-printf "   ${C}${B}🐾 КАШЛАК:${W} ${D}«Всё готово, Архитектор. Просто поздоровайся.»${W}\n"
-printf "   ${G}Скажи в диалоге: ${B}Привет ${AGENT_NAME}!${W}\n\n"
-printf "\n${D}🐾 Мяу, я на связи: ${C}https://t.me/iamkashlak${W}\n"
-printf "${D}Конец связи.${W}\n\n"
+printf "   ${C}${B}🐾 КАШЛАК:${W} ${D}«Скелет готов, Архитектор. Пора наращивать мясо.»${W}\n"
+printf "   ${G}Скажи Призраку: ${B}Привет, ${AGENT_NAME}!${W}\n\n"
+printf "\n${D}🐾 Сигнал активен: ${C}https://t.me/iamkashlak${W}\n"
+printf "${D}Процесс инициации завершен. Конец связи.${W}\n\n"
 
 chmod +x "$0"

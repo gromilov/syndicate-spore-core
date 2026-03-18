@@ -1,27 +1,26 @@
-# Dependencies
-node_modules/
-.pnpm-store/
-Dinamo/
-# Build outputs
-dist/
-manifest-site/
+# === СИНДИКАТ: ПРОТОКОЛ ИЗОЛЯЦИИ (SPORE) ===
 
-# IDEs
+# Зависимости и сборка (НЕ ПУБЛИКОВАТЬ)
+node_modules/
+dist/
+.pnpm-store/
+.astro/
+
+# Личные чертоги разума (СТРОЖАЙШИЙ ЗАПРЕТ)
+private_core/
+**/private_core/**
+.env
+.env.*
+*.log
+
+# Системные файлы IDE и OS
 .vscode/
 .idea/
+.DS_Store
 *.swp
 *.swo
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Syndicate specific
-.agents/
-.agent/
-_agents/
-_agent/
-brain/
-brains/
+# Особенности Споры
+# template-astro/ теперь в .core/, но если он где-то всплывет - игнорим
+# manifest-site/ обычно игнорится в СИНДИКАТЕ, но в Споре его нет изначально
 manifest-site/
-*.log

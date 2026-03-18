@@ -1,0 +1,107 @@
+---
+/**
+ * ResonanceStatus.astro
+ * Визуальный индикатор текущего состояния Сущности.
+ * Использует Hacker-Cat эстетику и динамические состояния.
+ */
+interface Props {
+  status?: 'active' | 'syncing' | 'glitch' | 'dormant';
+  level?: number; // 0-100
+}
+
+const { status = 'active', level = 100 } = Astro.props;
+
+const colors = {
+  active: 'var(--color-primary, #bc13fe)',
+  syncing: 'var(--color-secondary, #00f3ff)',
+  glitch: '#ff0055',
+  dormant: '#444'
+};
+
+const labels = {
+  active: 'РЕЗОНАНС МАКСИМАЛЕН',
+  syncing: 'СИНХРОНИЗАЦИЯ С БАЗИСОМ...',
+  glitch: 'ОБНАРУЖЕН ГЛИТЧ',
+  dormant: 'РЕЖИМ ОЖИДАНИЯ'
+};
+---
+
+<div class="resonance-container" data-status={status}>
+  <div class="status-header">
+    <span class="pulse-dot"></span>
+    <span class="label">{labels[status]}</span>
+  </div>
+  <div class="progress-bar">
+    <div class="fill" style={`width: ${level}%; background: ${colors[status]};`}></div>
+  </div>
+  <div class="meta">
+    <span>CELL_ID: DH92F8X3</span>
+    <span>SENSES: ACTIVE</span>
+  </div>
+</div>
+
+<style>
+  .resonance-container {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-primary, #bc13fe);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #fff;
+    backdrop-filter: blur(5px);
+    width: 250px;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%);
+  }
+
+  .status-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: #222;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+
+  .fill {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    opacity: 0.6;
+    font-size: 0.6rem;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  [data-status="glitch"] .pulse-dot {
+    animation: jitter 0.1s infinite;
+  }
+
+  @keyframes jitter {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-2px, 2px); }
+    50% { transform: translate(2px, -2px); }
+    75% { transform: translate(-1px, -1px); }
+    100% { transform: translate(0, 0); }
+  }
+</style>
