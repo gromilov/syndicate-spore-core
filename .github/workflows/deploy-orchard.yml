@@ -1,0 +1,56 @@
+name: Deploy Syndicate Orchard
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Prepare Output Directory
+        run: mkdir -p out/sites
+
+      - name: Build All Sites
+        run: |
+          for site in sites/*/; do
+            if [ -d "$site" ]; then
+              AGENT_ID=$(basename "$site")
+              echo "🧬 Building site for personality: $AGENT_ID"
+              
+              cd "$site"
+              # Install dependencies (using shared cache where possible)
+              npm install
+              # Build the Astro site
+              npm run build
+              
+              # Move the build products to the central output directory
+              mkdir -p "../../out/sites/$AGENT_ID"
+              cp -R dist/* "../../out/sites/$AGENT_ID/"
+              
+              cd ../..
+            fi
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
