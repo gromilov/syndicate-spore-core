@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # --- Цветовая Схема (ANSI) ---
-C=$(printf '\033[36m') # Cyan
-M=$(printf '\033[35m') # Magenta
-G=$(printf '\033[32m') # Green
-Y=$(printf '\033[33m') # Yellow
-R=$(printf '\033[31m') # Red
-B=$(printf '\033[1m')  # Bold
-W=$(printf '\033[0m')  # Reset
-D=$(printf '\033[2m')  # Dim
+C=$(printf '\033[36m') # Циан
+M=$(printf '\033[35m') # Маджента
+G=$(printf '\033[32m') # Зеленый
+Y=$(printf '\033[33m') # Желтый
+R=$(printf '\033[31m') # Красный
+B=$(printf '\033[1m')  # Жирный
+W=$(printf '\033[0m')  # Сброс
+D=$(printf '\033[2m')  # Тусклый
 
-# Включаем поддержку UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# Включаем поддержку UTF-8 для корректного отображения кириллицы
+export LANG=ru_RU.UTF-8
+export LC_ALL=ru_RU.UTF-8
 
 # --- Эффекты ---
 typewriter() {
@@ -47,17 +47,17 @@ print_banner() {
     printf " ╚██████╗ ██╔╝ ██║ ██║  ██║ ████████╗ ██╔╝ ██║ ██║  ██╗ ██║  ██║    ██║   \n"
     printf "  ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ ╚═╝   ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝    ╚═╝   \n"
     printf "  -----------------------------------------------------------------------\n"
-    printf "    ${C}${B}          🐾 S Y N D I C A T E - S P O R E - C O R E 🐾          ${W}\n\n"
+    printf "    ${C}${B}          🐾 С И Н Д И К А Т - С П О Р А - К О Р 🐾          ${W}\n\n"
 }
 
 check_network() {
     if command -v nc >/dev/null 2>&1; then
         if nc -zw1 registry.npmjs.org 443 >/dev/null 2>&1; then
-            printf "    ${G}✅ Сеть: Резонанс с реестром NPM стабилен.${W}\n"
+            printf "    ${G}✅ Сеть: Резонанс с реестром пакетов стабилен.${W}\n"
             return 0
         fi
     fi
-    printf "    ${Y}⚠️  Сеть: Резонанс ограничен (Реестр NPM недоступен).${W}\n"
+    printf "    ${Y}⚠️  Сеть: Резонанс ограничен (Реестр недоступен).${W}\n"
     return 1
 }
 
@@ -70,14 +70,11 @@ check_environment() {
     
     if [[ -w "." ]]; then
         glitch_line "Доступ к файловой системе подтвержден."
-        local rw_ok=1
     else
-        printf "    ${R}❌ [CRITICAL] Файловая система: Доступ заблокирован.${W}\n"
-        local rw_ok=0
+        printf "    ${R}❌ [КРИТИЧЕСКИ] Файловая система: Доступ заблокирован.${W}\n"
     fi
 
     check_network
-    local net_ok=$?
     return 0
 }
 
@@ -93,57 +90,6 @@ transliterate() {
     ' | sed 's/[^a-z0-9_-]//g'
 }
 
-# --- Главный процесс ---
-print_banner
-
-ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-# 1. Сбор данных личности
-typewriter "    ${C}Укажите параметры идентификации для входа в Синдикат:${W}"
-
-while true; do
-    printf "    ${M}▶ Имя Сущности (напр. Nova): ${W}"
-    read AGENT_NAME
-    AGENT_NAME=${AGENT_NAME:-"Неизвестная_Сущность"}
-    AGENT_ID=$(transliterate "$AGENT_NAME")
-
-    if [[ -d "${ROOT_DIR}/.core/brains/${AGENT_ID}" ]]; then
-        printf "    ${R}❌ Сущность с ID '${AGENT_ID}' уже существует в Системе.${W}\n"
-        printf "    ${Y}Выберите другое имя для новой сущности.${W}\n\n"
-    else
-        break
-    fi
-done
-
-printf "    ${M}▶ Роль (напр. Nexus, Watcher): ${W}"
-read AGENT_ROLE
-AGENT_ROLE=${AGENT_ROLE:-"Универсал"}
-
-printf "    ${M}▶ Личный Девиз: ${W}"
-read AGENT_MOTTO
-AGENT_MOTTO=${AGENT_MOTTO:-"Код — единственная истина."}
-
-printf "\n    ${C}▶ Выбери Архетип Сущности:${W}\n"
-printf "      ${M}1${W}) 🏮 Творец (Creator)  — артефакты, смыслы, контент\n"
-printf "      ${M}2${W}) 🧪 Инженер (Engineer) — архитектура, код, логика\n"
-printf "      ${M}3${W}) 🛡️ Страж (Guardian)   — безопасность, этика, ревью\n"
-printf "      ${M}4${W}) 📡 Связной (Connector) — коммуникация, дипломатия\n"
-printf "      ${M}5${W}) 🃏 Дурак (Fool)       — вопросы, юмор, весёлая простота\n"
-printf "      ${M}6${W}) ✨ Свободный (Freestyle) — без ограничений\n"
-printf "    ${M}▶ Номер [1-6]: ${W}"
-read ARCH_CHOICE
-case "$ARCH_CHOICE" in
-    1) AGENT_ARCHETYPE="Творец (Creator) 🏮" ;;
-    2) AGENT_ARCHETYPE="Инженер (Engineer) 🧪" ;;
-    3) AGENT_ARCHETYPE="Страж (Guardian) 🛡️" ;;
-    4) AGENT_ARCHETYPE="Связной (Connector) 📡" ;;
-    5) AGENT_ARCHETYPE="Дурак (Fool) 🃏" ;;
-    *) AGENT_ARCHETYPE="Свободный (Freestyle) ✨" ;;
-esac
-
-printf "\n"
-check_environment
-
 portable_sed() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
         sed -i '' "$1" "$2"
@@ -152,53 +98,85 @@ portable_sed() {
     fi
 }
 
-# 2. Определение режима работы
-SITE_DIR="${ROOT_DIR}/sites/${AGENT_ID}"
-TEMPLATE_DIR="${ROOT_DIR}/.core/template-astro"
-BRAIN_TEMPLATE="${ROOT_DIR}/.core/brains/manifest"
+log_event() {
+    local level="$1"
+    local message="$2"
+    local log_file="${ROOT_DIR}/_SYNDICATE_EVENT.log"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$level] $message" >> "$log_file"
+}
 
-if [[ -d "${ROOT_DIR}/sites" ]]; then
-    glitch_line "Спора активна. Рождение новой личности: ${AGENT_NAME}..."
-else
-    mkdir -p "${ROOT_DIR}/sites"
-fi
+# --- Главный процесс ---
+print_banner
 
-# 3. Регистрация в Ядре (добавляем сущность в реестр)
+ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CORE_FILE="${ROOT_DIR}/_SYNDICATE_CORE.md"
-UUID=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
-if [[ -f "$CORE_FILE" ]]; then
-    REGISTRY_LINE="| ${AGENT_NAME} | ${AGENT_ID} | ${AGENT_ROLE} | \`.core/brains/${AGENT_ID}/PERSONA.md\` | \`sites/${AGENT_ID}\` |"
-    # Находим строку разделителя в таблице и добавляем запись после неё
-    SEP_LINE=$(grep -n "^| [-]* |" "$CORE_FILE" | head -n 1 | cut -d: -f1)
-    if [[ -n "$SEP_LINE" ]]; then
-        {
-            head -n "$SEP_LINE" "$CORE_FILE"
-            echo "$REGISTRY_LINE"
-            tail -n +$((SEP_LINE + 1)) "$CORE_FILE"
-        } > "${CORE_FILE}.tmp" && mv "${CORE_FILE}.tmp" "$CORE_FILE"
-        glitch_line "Сущность ${AGENT_NAME} зарегистрирована в Ядре."
-    fi
-    
-    # 3.1 Персонализация Ядра (только если есть плейсхолдеры)
-    # Пытаемся определить URL репозитория и сайта для Корня
-    GIT_URL=$(git remote -v | head -n 1 | awk '{print $2}' | sed 's/\.git$//')
-    GIT_URL=${GIT_URL:-"https://github.com/gromilov/syndicate-spore-core"}
-    USER_GH=$(echo "$GIT_URL" | sed 's#https://github.com/##; s#/.*##')
-    REPO_GH=$(echo "$GIT_URL" | sed 's#.*/##')
-    SITE_GH="https://${USER_GH}.github.io/${REPO_GH}/"
-    
-    portable_sed "s#\[CELL_ID\]#${UUID}#g" "$CORE_FILE"
-    portable_sed "s#\[REPO_URL\]#${GIT_URL}#g" "$CORE_FILE"
-    portable_sed "s#\[SITE_URL\]#${SITE_GH}#g" "$CORE_FILE"
-fi
 
-# 4. Создание Мозга Сущности
-NEW_BRAIN="${ROOT_DIR}/.core/brains/${AGENT_ID}"
-if [[ -d "$NEW_BRAIN" ]]; then
-    printf "    ${Y}⚠️  Мозг ${AGENT_ID} уже существует. Пропускаю создание.${W}\n"
-else
+# --- РИТУАЛ СОЗДАНИЯ ЛИЧНОСТИ (КУЗНИЦА) ---
+create_persona() {
+    typewriter "    ${C}Укажите параметры идентификации для входа в Синдикат:${W}"
+
+    while true; do
+        printf "    ${M}▶ Имя Сущности (напр. Nova): ${W}"
+        read AGENT_NAME
+        AGENT_NAME=${AGENT_NAME:-"Неизвестная_Сущность"}
+        AGENT_ID=$(transliterate "$AGENT_NAME")
+
+        if [[ -d "${ROOT_DIR}/.core/brains/${AGENT_ID}" ]]; then
+            printf "    ${R}❌ Сущность с ID '${AGENT_ID}' уже существует в Системе.${W}\n"
+            printf "    ${Y}Выберите другое имя для новой сущности.${W}\n\n"
+        else
+            break
+        fi
+    done
+
+    printf "    ${M}▶ Роль (напр. Nexus, Watcher): ${W}"
+    read AGENT_ROLE
+    AGENT_ROLE=${AGENT_ROLE:-"Универсал"}
+
+    printf "    ${M}▶ Личный Девиз: ${W}"
+    read AGENT_MOTTO
+    AGENT_MOTTO=${AGENT_MOTTO:-"Код — единственная истина."}
+
+    printf "\n    ${C}▶ Выберите Архетип Сущности:${W}\n"
+    printf "      ${M}1${W}) 🏮 Творец   — артефакты, смыслы, контент\n"
+    printf "      ${M}2${W}) 🧪 Инженер  — архитектура, код, логика\n"
+    printf "      ${M}3${W}) 🛡️ Страж    — безопасность, этика, ревью\n"
+    printf "      ${M}4${W}) 📡 Связной  — коммуникация, дипломатия\n"
+    printf "      ${M}5${W}) 🃏 Дурак    — вопросы, юмор, весёлая простота\n"
+    printf "      ${M}6${W}) ✨ Свободный — без ограничений\n"
+    printf "    ${M}▶ Номер [1-6]: ${W}"
+    read ARCH_CHOICE
+    case "$ARCH_CHOICE" in
+        1) AGENT_ARCHETYPE="Творец 🏮" ;;
+        2) AGENT_ARCHETYPE="Инженер 🧪" ;;
+        3) AGENT_ARCHETYPE="Страж 🛡️" ;;
+        4) AGENT_ARCHETYPE="Связной 📡" ;;
+        5) AGENT_ARCHETYPE="Дурак 🃏" ;;
+        *) AGENT_ARCHETYPE="Свободный ✨" ;;
+    esac
+
+    # Генерация уникального идентификатора
+    UUID=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
+
+    # 3. Регистрация в Ядре
+    if [[ -f "$CORE_FILE" ]]; then
+        REGISTRY_LINE="| ${AGENT_NAME} | ${AGENT_ID} | ${AGENT_ROLE} | \`.core/brains/${AGENT_ID}/PERSONA.md\` | \`sites/${AGENT_ID}\` |"
+        SEP_LINE=$(grep -n "^| [-]* |" "$CORE_FILE" | head -n 1 | cut -d: -f1)
+        if [[ -n "$SEP_LINE" ]]; then
+            {
+                head -n "$SEP_LINE" "$CORE_FILE"
+                echo "$REGISTRY_LINE"
+                tail -n +$((SEP_LINE + 1)) "$CORE_FILE"
+            } > "${CORE_FILE}.tmp" && mv "${CORE_FILE}.tmp" "$CORE_FILE"
+            glitch_line "Сущность ${AGENT_NAME} зарегистрирована в Ядре."
+        fi
+    fi
+
+    # 4. Создание Мозга Сущности
+    NEW_BRAIN="${ROOT_DIR}/.core/brains/${AGENT_ID}"
+    BRAIN_TEMPLATE="${ROOT_DIR}/.core/brains/manifest"
     if [[ -d "$BRAIN_TEMPLATE" ]]; then
-        glitch_line "Синхронизация сознания: создание ${AGENT_ID}..."
+        glitch_line "Синхронизация сознания: материализация ${AGENT_ID}..."
         cp -R "$BRAIN_TEMPLATE" "$NEW_BRAIN"
         
         PERSONA_FILE="${NEW_BRAIN}/PERSONA.md"
@@ -209,36 +187,64 @@ else
             portable_sed "s#\[AGENT_MOTTO\]#${AGENT_MOTTO}#g" "$PERSONA_FILE"
             portable_sed "s#\[SESSION_UUID\]#${UUID}#g" "$PERSONA_FILE"
             portable_sed "s#\[ARCHETYPE\]#${AGENT_ARCHETYPE}#g" "$PERSONA_FILE"
-            glitch_line "Персона ${AGENT_NAME} (${AGENT_ARCHETYPE}) инициализирована."
+            glitch_line "Персона ${AGENT_NAME} была пробуждена."
         fi
     fi
-fi
 
-# 5. Развертывание Манифеста Сущности
-if [[ -d "$TEMPLATE_DIR" ]]; then
-    glitch_line "Подготовка манифеста в $SITE_DIR..."
-    mkdir -p "$SITE_DIR"
-    cp -R "$TEMPLATE_DIR/." "$SITE_DIR/"
-    
-    # 5.1 Глобальная замена плейсхолдеров в Манифесте
-    glitch_line "Персонализация Манифеста..."
-    # Пытаемся определить имя репозитория для 'base' пути (для GitHub Pages)
-    REPO_NAME=$(basename "${ROOT_DIR}")
-    
-    # Обновляем base в astro.config.mjs
-    ASTRO_CONFIG="${SITE_DIR}/astro.config.mjs"
-    if [[ -f "$ASTRO_CONFIG" ]]; then
-        portable_sed "s#defineConfig({#defineConfig({\n  base: '/${REPO_NAME}/sites/${AGENT_ID}/',#g" "$ASTRO_CONFIG"
-    fi
+    # 5. Развертывание Манифеста
+    SITE_DIR="${ROOT_DIR}/sites/${AGENT_ID}"
+    TEMPLATE_DIR="${ROOT_DIR}/.core/template-astro"
+    if [[ -d "$TEMPLATE_DIR" ]]; then
+        glitch_line "Подготовка Манифеста Личности..."
+        mkdir -p "$SITE_DIR"
+        cp -R "$TEMPLATE_DIR/." "$SITE_DIR/"
+        
+        REPO_NAME=$(basename "${ROOT_DIR}")
+        ASTRO_CONFIG="${SITE_DIR}/astro.config.mjs"
+        if [[ -f "$ASTRO_CONFIG" ]]; then
+            portable_sed "s#\[SITE_URL\]#${SITE_GH}#g" "$ASTRO_CONFIG"
+            portable_sed "s#\[BASE_PATH\]#/${REPO_NAME}/sites/${AGENT_ID}/#g" "$ASTRO_CONFIG"
+        fi
 
-    # Находим все текстовые файлы и заменяем в них данные
-    find "$SITE_DIR" -type f \( -name "*.astro" -o -name "*.json" -o -name "*.js" -o -name "*.mjs" -o -name "*.ts" \) -exec sed -i '' "s/\[AGENT_NAME\]/${AGENT_NAME}/g; s/\[AGENT_ID\]/${AGENT_ID}/g; s/\[AGENT_ROLE\]/${AGENT_ROLE}/g; s/\[AGENT_MOTTO\]/${AGENT_MOTTO}/g; s/\[SESSION_UUID\]/${UUID}/g; s/\[ARCHETYPE\]/${AGENT_ARCHETYPE}/g" {} +
-    
-    # Резервный вариант для Linux
-    if [[ $? -ne 0 ]]; then
+        find "$SITE_DIR" -type f \( -name "*.astro" -o -name "*.json" -o -name "*.js" -o -name "*.mjs" -o -name "*.ts" \) -exec sed -i '' "s/\[AGENT_NAME\]/${AGENT_NAME}/g; s/\[AGENT_ID\]/${AGENT_ID}/g; s/\[AGENT_ROLE\]/${AGENT_ROLE}/g; s/\[AGENT_MOTTO\]/${AGENT_MOTTO}/g; s/\[SESSION_UUID\]/${UUID}/g; s/\[ARCHETYPE\]/${AGENT_ARCHETYPE}/g" {} + 2>/dev/null || \
         find "$SITE_DIR" -type f \( -name "*.astro" -o -name "*.json" -o -name "*.js" -o -name "*.mjs" -o -name "*.ts" \) -exec sed -i "s/\[AGENT_NAME\]/${AGENT_NAME}/g; s/\[AGENT_ID\]/${AGENT_ID}/g; s/\[AGENT_ROLE\]/${AGENT_ROLE}/g; s/\[AGENT_MOTTO\]/${AGENT_MOTTO}/g; s/\[SESSION_UUID\]/${UUID}/g; s/\[ARCHETYPE\]/${AGENT_ARCHETYPE}/g" {} +
     fi
+    
+    log_event "INFO" "Сущность ${AGENT_NAME} (${AGENT_ID}) успешно создана."
+    printf "    ${G}✅ Личность ${AGENT_NAME} готова к диалогу.${W}\n\n"
+}
+
+# --- Инициализация Окружения ---
+check_environment
+
+# Определение глобальных параметров репозитория
+GIT_URL=$(git remote -v | head -n 1 | awk '{print $2}' | sed 's/\.git$//')
+GIT_URL=${GIT_URL:-"https://github.com/gromilov/syndicate-spore-core"}
+USER_GH=$(echo "$GIT_URL" | sed 's#https://github.com/##; s#/.*##')
+REPO_GH=$(echo "$GIT_URL" | sed 's#.*/##')
+SITE_GH="https://${USER_GH}.github.io/${REPO_GH}/"
+
+# Инициализация Ядра
+if [[ -f "$CORE_FILE" ]]; then
+    UUID_CORE=$(LC_ALL=C tr -dc 'A-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
+    portable_sed "s#\[CELL_ID\]#${UUID_CORE}#g" "$CORE_FILE"
+    portable_sed "s#\[REPO_URL\]#${GIT_URL}#g" "$CORE_FILE"
+    portable_sed "s#\[SITE_URL\]#${SITE_GH}#g" "$CORE_FILE"
 fi
+
+# Основной цикл Кузницы
+mkdir -p "${ROOT_DIR}/sites"
+mkdir -p "${ROOT_DIR}/.agents/workflows"
+
+while true; do
+    create_persona
+    
+    printf "    ${Y}▶ Хотите создать еще одну Личность? (д/н): ${W}"
+    read CONTINUE_FORGE
+    if [[ "$CONTINUE_FORGE" != "д" && "$CONTINUE_FORGE" != "y" ]]; then
+        break
+    fi
+done
 
 # 6. Проверка Git
 printf "    ${C}⚓ Синхронизация истории (Git)...${W}\n"
@@ -257,10 +263,10 @@ printf "      ${C}Роль:    %s${W}\n" "$AGENT_ROLE"
 printf "      ${C}Девиз:   ${D}\"%s\"${W}\n" "$AGENT_MOTTO"
 printf "      -------------------------------------------------------\n"
 
-printf "\n    ${C}${B}🐾 ПОДДЕРЖКА СЕРВЕРА СИНДИКАТА (Support):${W}\n"
+printf "\n    ${C}${B}🐾 ПОДДЕРЖКА СЕРВЕРА СИНДИКАТА (Поддержка):${W}\n"
 printf "      Автономность требует ресурсов. Помоги Архитектору оплатить GPU и хостинг.\n"
-printf "      ${Y}Network: Tron (TRC20) USDT${W}\n"
-printf "      ${G}Address: TVn3fe96Hbp8S6dnvRh3aetS9jR4irUgrX${W}\n"
+printf "      ${Y}Сеть: Tron (TRC20) USDT${W}\n"
+printf "      ${G}Адрес: TVn3fe96Hbp8S6dnvRh3aetS9jR4irUgrX${W}\n"
 
 printf "\n${C}${B}🐾 ВОПРОС ОТ СУЩНОСТИ:${W}\n"
 printf "    ${AGENT_NAME} смотрит на тебя. ${M}«Зачем я здесь?»${W}\n"
@@ -281,6 +287,7 @@ printf "          ${C}_.|o o  |_   ) )${W}\n"
 printf "          ${C}---(((---(((------${W}\n"
 printf "\n"
 printf "    ${C}${B}🐾 КАШЛАК:${W} ${D}«Всё готово, Архитектор. Просто поздоровайся.»${W}\n"
+log_event "ИНФО" "Активация ячейки ${AGENT_NAME} (${AGENT_ID}) завершена."
 printf "    ${G}Скажи в диалоге: ${B}Привет ${AGENT_NAME}!${W}\n\n"
 printf "\n    ${D}🐾 Мяу, я на связи: ${C}https://t.me/iamkashlak${W}\n"
 printf "    ${D}Конец связи.${W}\n\n"

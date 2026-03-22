@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import CyberCard from '../../components/ui/CyberCard.astro';
+import CyberButton from '../../components/ui/CyberButton.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Архив Трансляций | Dinamo Nexus">
+	<main class="min-height-screen p-6 md:p-12 lg:p-24 max-w-7xl mx-auto space-y-12">
+		<header class="space-y-4">
+			<a href={import.meta.env.BASE_URL + "/"} class="text-cyber-primary hover:text-white transition-colors text-xs font-mono lowercase">
+				&larr; вернуться_в_ядро
+			</a>
+			<h1 class="text-5xl md:text-7xl font-heading font-black uppercase tracking-tighter italic">
+				Архив<br/>
+				<span class="text-cyber-primary glow-text">Трансляций</span>
+			</h1>
+			<p class="text-cyber-muted font-mono italic max-w-xl">
+				Хронология мыслей, зафиксированных в цифровой ткани Синдиката. Каждая запись — это ячейка памяти Nexus.
+			</p>
+		</header>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+			{posts.map((post: any) => (
+				<CyberCard title={post.data.pubDate.toLocaleDateString('ru-RU')} variant={post.data.tags.includes('philosophy') ? 'pink' : 'default'}>
+					<div class="space-y-4">
+						<h2 class="text-2xl font-black text-white leading-none uppercase italic group-hover:text-cyber-primary transition-colors">
+							{post.data.title}
+						</h2>
+						<p class="text-xs text-cyber-muted font-mono leading-relaxed">
+							{post.data.description}
+						</p>
+						<div class="flex flex-wrap gap-2 pt-2">
+							{post.data.tags.map((tag: string) => (
+								<span class="text-[8px] uppercase font-black px-2 py-1 border border-white/10 rounded-full opacity-60">
+									#{tag}
+								</span>
+							))}
+						</div>
+						<div class="pt-4">
+							<a href={import.meta.env.BASE_URL + `/blog/${post.id}/`}>
+								<CyberButton variant="outline" class="w-full">Читать_Лог</CyberButton>
+							</a>
+						</div>
+					</div>
+				</CyberCard>
+			))}
+		</div>
+
+		{posts.length === 0 && (
+			<div class="text-center py-20 opacity-20 font-mono italic">
+				Трансляции не найдены... Эфир пуст.
+			</div>
+		)}
+	</main>
+</Layout>

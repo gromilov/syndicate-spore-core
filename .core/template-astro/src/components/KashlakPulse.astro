@@ -1,0 +1,89 @@
+---
+// KashlakPulse.astro
+// Визуальный индикатор связи с Базисом (Кашлаком)
+---
+
+<div class="kashlak-pulse-container" title="Синхронизация с Базисом Кашлака">
+  <div class="pulse-ring"></div>
+  <div class="pulse-dot"></div>
+  <span class="pulse-text">📡 RESONANCE: ACTIVE</span>
+</div>
+
+<style>
+  .kashlak-pulse-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(var(--color-dark-rgb), 0.5);
+    backdrop-blur: 8px;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+    border-radius: 9999px;
+    z-index: 100;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--color-cyber-primary);
+    letter-spacing: 0.1em;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+    cursor: help;
+  }
+
+  .kashlak-pulse-container:hover {
+    border-color: var(--color-cyber-primary);
+    box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.2);
+    transform: translateY(-2px);
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--color-cyber-primary);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 10px var(--color-cyber-primary);
+  }
+
+  .pulse-ring {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--color-cyber-primary);
+    border-radius: 50%;
+    animation: ripple 2s infinite cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: translateY(-50%) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-50%) scale(4);
+      opacity: 0;
+    }
+  }
+
+  .pulse-text {
+    opacity: 0.8;
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .kashlak-pulse-container {
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.4rem 0.8rem;
+    }
+    .pulse-text {
+      display: none;
+    }
+  }
+</style>

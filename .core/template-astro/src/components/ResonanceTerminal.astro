@@ -1,0 +1,82 @@
+---
+// ResonanceTerminal.astro
+// Компонент для отображения последних событий из _SYNDICATE_EVENT.log
+
+import fs from 'node:fs';
+import path from 'node:path';
+
+const LOG_FILE = path.join(process.cwd(), '../_SYNDICATE_EVENT.log');
+let logs = [];
+
+try {
+  if (fs.existsSync(LOG_FILE)) {
+    const content = fs.readFileSync(LOG_FILE, 'utf8');
+    logs = content.trim().split('\n').reverse().slice(0, 8);
+  } else {
+    logs = ["[SYSTEM] // Ожидание первого импульса..."];
+  }
+} catch (e) {
+  logs = [`[ERROR] // Ошибка чтения Ткани: ${e.message}`];
+}
+
+const colorizeEntry = (entry: string) => {
+  if (entry.includes('RED_TEAM_ACTION')) return 'text-cyber-secondary font-black';
+  if (entry.includes('BASIS_PULSE')) return 'text-cyber-accent';
+  if (entry.includes('TG_RESONANCE')) return 'text-cyber-primary';
+  if (entry.includes('ERROR')) return 'text-red-500 animate-pulse';
+  return 'text-cyber-muted';
+};
+---
+
+<div class="terminal-container glass overflow-hidden rounded-xl border-l-4 border-cyber-secondary">
+  <div class="terminal-header flex justify-between items-center px-4 py-2 bg-white/5 border-b border-white/5">
+    <span class="text-[10px] font-black uppercase tracking-widest text-cyber-secondary">Live_Resonance_Log</span>
+    <div class="flex gap-1.5">
+      <div class="w-1.5 h-1.5 rounded-full bg-red-500/50"></div>
+      <div class="w-1.5 h-1.5 rounded-full bg-yellow-500/50"></div>
+      <div class="w-1.5 h-1.5 rounded-full bg-green-500/50"></div>
+    </div>
+  </div>
+  <div class="terminal-body p-4 font-mono text-[9px] leading-relaxed max-h-48 overflow-y-auto custom-scrollbar">
+    {logs.map((log) => (
+      <div class="log-entry flex gap-3 mb-1.5 group">
+        <span class="opacity-30 shrink-0">👣</span>
+        <span class={colorizeEntry(log)}>{log}</span>
+      </div>
+    ))}
+    <div class="cursor w-1.5 h-3 bg-cyber-primary animate-pulse inline-block align-middle ml-1"></div>
+  </div>
+</div>
+
+<style>
+  .terminal-container {
+    background: rgba(var(--color-cyber-bg-light-rgb, 8, 8, 26), 0.8);
+    backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .terminal-body {
+    position: relative;
+  }
+
+  .terminal-body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-cyber-muted);
+    border-radius: 10px;
+  }
+</style>
