@@ -6,7 +6,7 @@
 | :-------------------- | :-------- | :---------- | :------------------ | :----------------------------------------------------- |
 | **ШАБЛОН_ФУНКЦИИ**    | `ШАБЛОН`  | `ШАБЛОН`    | Ритуал `[ПИСАРЬ]`   | [`TEMPLATE.md`](./GHOST_FUNCTION_TEMPLATE.md)          |
 | **КУЗНИЦА_ЛИЧНОСТЕЙ** | `КУЗНИЦА` | `[КУЗНИЦА]` | Ритуал `[ЛИЧНОСТЬ]` | [`FORGE.md`](./GHOST_PERSONA_FORGE.md)                 |
-| **PULSE_WATCHDOG**    | `СИСТЕМА` | `РИТМ`      | ЛОГ_РЕЗОНАНСА       | [`GHOST_PULSE_WATCHDOG.md`](./GHOST_PULSE_WATCHDOG.md) |
+| **PULSE_WATCHDOG**    | `СИСТЕМА` | `РИТМ`      | ЛОГ_РЕЗОНАНСА       | [`.core/scripts/pulse_watchdog.sh`](file:///Volumes/Work/Dinamo/test/.core/scripts/pulse_watchdog.sh) |
 
 ---
 
